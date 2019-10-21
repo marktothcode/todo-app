@@ -16,7 +16,7 @@ class App extends React.Component {
         let indexOfItem = todos.indexOf(event.target.textContent)
 
         if (indexOfItem !== -1) {
-            todos.splice(todos, 1);
+            todos.splice(indexOfItem, 1);
             this.setState({ todos: todos });
         }
     }
@@ -67,9 +67,6 @@ class MyForm extends React.Component {
 }
 
 class List extends React.Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         let names = this.props.todos;
