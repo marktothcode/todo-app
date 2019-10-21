@@ -7,26 +7,37 @@ class App extends React.Component {
         this.state = { todos: [] };
     }
 
-    pushItemIntoArray = (newItem) => {      
-        this.setState({ todos: [...this.state.todos, newItem]})                    
+    pushItemIntoArray = (newItem) => {
+        this.setState({ todos: [...this.state.todos, newItem] })
     };
+
+    removeTodo = (event) => {
+        let todos = [...this.state.todos];
+        let indexOfItem = todos.indexOf(event.target.textContent)
+
+        if (indexOfItem !== -1) {
+            todos.splice(todos, 1);
+            this.setState({ todos: todos });
+        }
+    }
+
     render() {
         return (
-        <div>
-        <MyForm onButtonPress={this.pushItemIntoArray}></MyForm>
-        <List todos={this.state.todos}></List>
-        </div>    
-        )     
+            <div>
+                <MyForm onButtonPress={this.pushItemIntoArray}></MyForm>
+                <List todos={this.state.todos} removeTodo={this.removeTodo}></List>
+            </div>
+        )
     }
 };
 
 class MyForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {          
+        this.state = {
             newValue: ''
-    };
-}
+        };
+    }
 
     storeCurrentUserInput = (event) => {
         let newValue = event.target.value;
@@ -35,7 +46,7 @@ class MyForm extends React.Component {
 
     sendValueToApp = (e) => {
         this.props.onButtonPress(this.state.newValue);
-        this.setState({newValue : ''})
+        this.setState({ newValue: '' })
         e.preventDefault();
     }
 
@@ -47,31 +58,38 @@ class MyForm extends React.Component {
                 <input
                     type="text"
                     onChange={this.storeCurrentUserInput}
-                    value = {this.state.newValue}
+                    value={this.state.newValue}
                 />
                 <button onClick={this.sendValueToApp}></button>
             </form>
-
         )
     }
 }
 
 class List extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         let names = this.props.todos;
+        let items = names.map((name, index) => {
+            return <li onClick={this.props.removeTodo} key={index}>{name}</li>;
+        })
         return (
             <ul>
-                {names.map(function(name, index){
-                    return <li onClick={console.log('it has been clicked')} key={ index }>{name}</li>;
-                  })}
+                {
+                    names.length > 0 ?
+                        items
+                        : null
+                }
             </ul>
         )
     }
 };
 
 ReactDOM.render(
-    <App>       
-    </App>    
+    <App />
     ,
     document.getElementById('root')
 );
