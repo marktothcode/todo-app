@@ -7,24 +7,29 @@ class App extends React.Component {
         this.state = { todos: [] };
     }
 
-    pushItemIntoArray = (newItem) => {
-        this.setState({ todos: [...this.state.todos, newItem] })
+    pushTodoIntoArray = (newItem) => {
+        let newID = this.state.todos.length ? this.state.todos[this.state.todos.length - 1].id + 1 : 0;
+        let newObj = { text: newItem, id: newID };
+        this.setState({ todos: [...this.state.todos, newObj] })
     };
 
-    removeTodo = (event) => {
+    removeTodo = (id) => {
         let todos = [...this.state.todos];
-        let indexOfItem = todos.indexOf(event.target.textContent)
+        let indexOfItem = todos.findIndex(function (todo) {
+            return todo.id === id;
+        });
+
+
 
         if (indexOfItem !== -1) {
             todos.splice(indexOfItem, 1);
             this.setState({ todos: todos });
         }
     }
-
     render() {
         return (
             <div>
-                <MyForm onButtonPress={this.pushItemIntoArray}></MyForm>
+                <MyForm onButtonPress={this.pushTodoIntoArray}></MyForm>
                 <List todos={this.state.todos} removeTodo={this.removeTodo}></List>
             </div>
         )
@@ -53,7 +58,6 @@ class MyForm extends React.Component {
     render() {
         return (
             <form>
-                <h1>Hello</h1>
                 <p>Enter your todo:</p>
                 <input
                     type="text"
@@ -67,11 +71,15 @@ class MyForm extends React.Component {
 }
 
 class List extends React.Component {
-
     render() {
         let names = this.props.todos;
-        let items = names.map((name, index) => {
-            return <li onClick={this.props.removeTodo} key={index}>{name}</li>;
+        let items = names.map((name) => {
+
+            return (
+                <li key={name.id}>{name.text}
+                    <span onClick={this.props.removeTodo.bind(null, name.id)}>CLICK ME</span>
+                </li>
+            )
         })
         return (
             <ul>
